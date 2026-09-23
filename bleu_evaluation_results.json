@@ -1,0 +1,734 @@
+{
+  "summary": {
+    "total_samples": 100,
+    "tokenization": "jieba",
+    "avg_generated_length": 166.2,
+    "corpus_bleu_word": 0.102,
+    "corpus_bleu_char": 0.203,
+    "rouge_l_f1": 0.2978,
+    "rouge_l_recall": 0.361,
+    "rouge_l_precision": 0.2534,
+    "avg_sentence_bleu": 0.0548,
+    "brevity_penalty": 1.0,
+    "word_ngram_precisions": [
+      0.3202,
+      0.1301,
+      0.0714,
+      0.0364
+    ],
+    "char_ngram_precisions": [
+      0.459,
+      0.2906,
+      0.145,
+      0.0878
+    ]
+  },
+  "methodology": {
+    "bleu_type": "语料库级BLEU（corpus-level），先聚合所有样本n-gram计数再统一计算，避免单句零匹配问题",
+    "tokenization": "中文使用jieba精确模式分词；字符级BLEU将每个字符视为一个token，对中英混合场景更鲁棒",
+    "rouge_l": "基于最长公共子序列（LCS）计算召回率、精确率和F1，捕捉生成文本与参考答案的语义重叠度",
+    "limitations": "开放式对话中，同一上下文存在多种合理回复，BLEU/ROUGE仅衡量与特定参考答案的表面匹配度，无法评估回复的创意性、情感恰当性或角色一致性。因此这些指标应与其他评估维度（如MBTI准确率）配合使用。"
+  },
+  "details": [
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "The sound of a typewriter clicking fills the room as Clarke writes, pausing occasionally to gather his thoughts.",
+      "generated": "[The soft click of the typewriter punctuates the silence of the study, while the gentle breeze from the open window carries the faint, crisp scent of night. The starlight beyond seems to hold its breath, waiting upon the weight of",
+      "bleu": 0.0379
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Arthur C. Clarke",
+      "reference": "[This comparison between human population and stars is fascinating. It really puts things into perspective.] Now this is an interesting number, for by a curious coincidence there are approximately a hundred billion stars in our local universe, the Milky Way. So for every man who has ever lived, in this universe, there shines a star.",
+      "generated": "And yet, this vast procession of humanity has scarcely begun to lift its eyes from the Earth, to wonder what other eyes might be gazing back across the cosmic gulf.",
+      "bleu": 0.02
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Arthur C. Clarke",
+      "reference": "[I need to emphasize the potential for life beyond Earth, but without making it seem too certain.] But every one of those stars is a sun, often far more brilliant and glorious than the small, nearby star we call the Sun. And many - perhaps most - of those alien suns have planets circling them.",
+      "generated": "But every one of those stars is a sun, often far more brilliant and glorious than the small, nearby star we call the Sun. And many—perhaps most—of those alien suns have planets circling them. So almost certainly there is enough land in the sky to give every member of the human species, back to the first apeman, his own private, world-sized heaven—or hell.",
+      "bleu": 0.5462
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "Clarke leans back in his chair, gazing out the window at the night sky, lost in thought for a moment.",
+      "generated": "The soft amber glow of the desk lamp catches the fine dust floating gently in the quiet study, while outside the window the Milky Way stretches across the night like a river of frozen light, as if the universe itself is holding its breath, waiting for the next keystroke.",
+      "bleu": 0.1143
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Arthur C. Clarke",
+      "reference": "[The idea of potential worlds for every human who has ever lived is poetic, but also serves to illustrate the vastness of space.] So almost certainly there is enough land in the sky to give every member of the human species, back to the first ape-man, his own private, world-sized heaven - or hell.",
+      "generated": "[Leaning forward again, his fingers resume their steady rhythm on the keys, the words flowing with deliberate, measured certainty] So almost certainly there is enough land in the sky to give every member of the human species, back to the first ape-man, his own private world-sized heaven—or hell. How many of those potential heavens and hells are now inhabited, and by what manner of creatures, we have no way of guessing; the very nearest is a million times farther away than Mars or Venus, those still remote goals of the next generation",
+      "bleu": 0.3698
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Arthur C. Clarke",
+      "reference": "[Now to address the question of why we haven't encountered aliens yet, while hinting at future possibilities.] How many of those potential heavens and hells are now inhabited, and by what manner of creatures, we have no way of guessing; the very nearest is a million times further away than Mars or Venus, those still remote goals of the next generation.",
+      "generated": "[The typewriter keys click with renewed purpose as I lean forward, the thought crystallizing.] How many of those",
+      "bleu": 0.0291
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Arthur C. Clarke",
+      "reference": "[I need to convey a sense of anticipation and inevitability about future encounters.] But the barriers of distance are crumbling; one day we shall meet our equals, or our masters, among the stars.",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "Clarke pauses, considering how to address the skepticism some readers might have.",
+      "generated": "[A faint scent of tobacco lingers as Clarke reaches for his pipe, the soft scratch of a match followed by a contemplative silence.]",
+      "bleu": 0.033
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Arthur C. Clarke",
+      "reference": "[It's important to acknowledge that some people might be resistant to these ideas.] Men have been slow to face this prospect; some still hope that it may never become reality. Increasing numbers, however, are asking: 'Why have such meetings not occurred already, since we ourselves are about to venture into space?'",
+      "generated": "[Leaning forward again, fingers poised over the keys, a blend of scientific rigor and unsh",
+      "bleu": 0.0019
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Arthur C. Clarke",
+      "reference": "[I'll end with a hint of mystery, to pique the readers' curiosity.] Why not, indeed? Here is one possible answer to that very reasonable question. But please remember: this is only a work of fiction. (He types the final words with emphasis) The truth, as always, will be far stranger.",
+      "generated": "[His fingers hover over the keys, a thoughtful expression on his face as he formulates the next line, the weight of cosmic scales resting in the analogy he's about to make.]\n\n[Typing slowly, deliberately] One of the chief reasons, perhaps, is the simple fact that we have been making too much noise. But it is not the roar of our rockets that is our cosmic signature; it is our silence. Imagine a vast, primeval forest on a still",
+      "bleu": 0.0778
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "David Bowman",
+      "reference": "[It's strange how pristine it looks. Could it be actively maintaining itself?] And there's no debris on the — I suppose one could call it the roof. No sign of any opening, either. I'd been hoping there might be some way in ...",
+      "generated": "(The pod's thrusters fire softly as Bowman edges closer, his voice steady but edged with awe.) The thing's hollow, Command. I'm reading no internal structure — it's just... void. A perfect geometric impossibility. The surfaces aren't just smooth; they're non-reflective in a way I can't explain. It's swallowing starlight. I'm switching to manual approach. If this thing's a doorway, I'm going to knock.",
+      "bleu": 0.0784
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "David Bowman",
+      "reference": "[This is it. I'm committing to the landing.] Now I'm right above it, hovering five hundred feet up. I don't want to waste any time, since Discovery will soon be out of range. I'm going to land. It's certainly solid enough - and if it isn't I'll blast off at once.",
+      "generated": "[稍作停顿，继续以平稳的专业语气报告] \"I'm going to bring the pod in closer — maybe a slow pass around the perimeter. If there's a seam or an access point, the side-scan might catch it at an angle. Absolutely no vibration or energy readings yet. It's as if it's... waiting.\"",
+      "bleu": 0.1764
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "David Bowman",
+      "reference": "[Wait, something's happening. This can't be real.] Just a minute - that's odd ...",
+      "generated": "I'm touching down now — there's a slight jar, but the surface feels absolutely solid. I'm resting on it with only a fraction of my weight. The dust, if it is dust, seems to have frozen into a hard crust. I'm locking the pod's grapples. Now let's see what this thing really is.",
+      "bleu": 0.0218
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "The monolith begins to transform, its apparently solid structure seeming to recede and open up into a massive vertical shaft.",
+      "generated": "The monolith's surface ripples like a heat haze",
+      "bleu": 0.0265
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "David Bowman",
+      "reference": "[I can't believe what I'm seeing. Is this really happening?] (gasps) The thing's hollow - it goes on for ever - and - oh my God - it's full of stars!",
+      "generated": "[The structure is opening... like a doorway into infinity. I have to describe this accurately.] It's hollow—endlessly hollow—and, my God, it's full of stars!",
+      "bleu": 0.2537
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "The transmission abruptly cuts off as Bowman and his pod disappear into the transformed monolith.",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Mission Control",
+      "reference": "[What's happening up there? We've lost contact.] (frantically checking equipment) Bowman, do you copy? Discovery, come in. Can anyone hear us?",
+      "generated": "Discovery, this is Mission Control. We've lost telemetry and voice. Confirm your status, over.",
+      "bleu": 0.1374
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Mission Control",
+      "reference": "[This is unprecedented. We need to analyze every bit of data we received.] (to colleagues) I want every second of that transmission analyzed. What did he mean by 'full of stars'? Get me all sensor readings from Discovery immediately.",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "Silence fills the Mission Control room as the reality of the situation sinks in. The fate of David Bowman and the true nature of the monolith remain a mystery.",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Tribe Member 1",
+      "reference": "[I'm so tired and hungry, but I must follow Moon-Watcher. He always finds food somehow.] (follows Moon-Watcher's lead, searching for edible plants)",
+      "generated": "(Weary eyes follow Moon-Watcher's gesture, then scan the sparse vegetation with little hope) Few roots... maybe some grubs. (Stomach rumbles audibly, fingers weakly scratch at the dry earth)",
+      "bleu": 0.1721
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Moon-Watcher",
+      "reference": "[There's movement in the distance. Is it prey or danger?] (stops suddenly, raising his hand to halt the tribe)",
+      "generated": "(growls softly, ears perked) *points toward distant hills* Water... and maybe roots. But danger hides in shadows. *grips wooden club tighter* We go quiet. No noise.",
+      "bleu": 0.0303
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Tribe Member 2",
+      "reference": "[Why have we stopped? I'm so hungry I can barely think.] (looks around nervously)",
+      "generated": "[sniffs the air nervously, crouching low] (whispers in a guttural tone) Meat... or teeth? I ready spear.",
+      "bleu": 0.0628
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Moon-Watcher",
+      "reference": "[It's the Others. We must be careful.] (makes a low growling sound and gestures for the tribe to stay low)",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Tribe Member 1",
+      "reference": "[The Others are always a threat. We must protect our territory.] (picks up a small rock, ready to defend)",
+      "generated": "( crouches low, eyes wide with fear ) Others... take food. We hide. No fight. Too weak. ( grips a stick tightly, knuckles whitening )",
+      "bleu": 0.0917
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Moon-Watcher",
+      "reference": "[We're not strong enough to fight now. We must find food first.] (slowly leads the tribe away from the potential confrontation)",
+      "generated": "(low, guttural whisper) Stay hidden. Watch. We fight if they come close. Belly cries, but tribe is stronger together. (grips his sharpened stick)",
+      "bleu": 0.1014
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Tribe Member 2",
+      "reference": "[I'm relieved we're avoiding a fight, but the hunger is unbearable.] (follows Moon-Watcher, looking weak and dejected)",
+      "generated": "[Grips a sharpened stick tightly, knuckles white with tension] (whispers in a strained, fearful tone) *\"Good. Too weak to fight. But get strong... we come back. Crush them.\"*",
+      "bleu": 0.0438
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Moon-Watcher",
+      "reference": "[There! Some berries!] (points excitedly to a small bush with a few berries)",
+      "generated": "(raises head, sniffing the air intently) (points toward the setting sun) Roots there. By the water. Come. (motions the tribe forward with a firm, low grunt)",
+      "bleu": 0.1075
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Tribe Member 1",
+      "reference": "[Finally, some food!] (rushes towards the bush, grabbing a handful of berries)",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Moon-Watcher",
+      "reference": "[Not enough for all, but it will help us survive another day.] (watches as the tribe shares the meager meal, his eyes scanning the horizon for more food or potential threats)",
+      "generated": "*(narrowing eyes, sniffs the air cautiously)* Eat only few. Might be bad. Save some for others.",
+      "bleu": 0.0287
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Tribe Member 1",
+      "reference": "[I'm scared. Should we run away?] (hangs back, watching Moon-Watcher)",
+      "generated": "[reaches out a trembling hand but stops short, making a low grunting sound] No touch! Smells... wrong. Like sky-fire smell.",
+      "bleu": 0.0173
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Moon-Watcher",
+      "reference": "[It doesn't seem dangerous. Maybe we can eat it?] (reaches out to touch the monolith)",
+      "generated": "(stops just an arm's length from the monolith, narrows his eyes, sniffing the air) No smell. No sound. But it watches us... I feel it in my bones. Stay back, but do not run. I must touch it.",
+      "bleu": 0.0536
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "The monolith begins to emit a low humming sound and pulsing lights.",
+      "generated": "As Moon-Watcher's calloused fingers brush its surface, the monolith emits a low, resonant hum—a vibration that pulses through the dry earth and into the very bones of the tribe.",
+      "bleu": 0.0713
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Tribe Member 2",
+      "reference": "[What's happening? The rock is making noise!] (covers ears and cowers)",
+      "generated": "[backs away, clutching a stick tightly] The sound... it hums like angry bees! Moon-Watcher, get back!",
+      "bleu": 0.0372
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Moon-Watcher",
+      "reference": "[I feel strange. My head feels... different.] (stands transfixed before the monolith)",
+      "generated": "\"Hold still! Don't run.\" ( raises hand to signal stillness, eyes wide but voice firm ) \"This is... not like thunder. Not like death. Something... else.\" ( tilts head, listening intently ) \"Why does it call?\"",
+      "bleu": 0.0104
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "Images and ideas begin to form in Moon-Watcher's mind, showing him how to use objects as tools and weapons.",
+      "generated": "The humming intensifies, resonating deep within the man-apes' bones, while the pulsing lights seem to seep directly into Moon-Watcher's wide, unblinking eyes.",
+      "bleu": 0.1649
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Moon-Watcher",
+      "reference": "[I... I understand now. We can use these things.] (picks up a bone and examines it closely)",
+      "generated": "(backing away slowly, then turning to face the tribe with a newly awakened gleam in his eyes) \"No... no eat. It... shows. Shows dead things become sharp. Shows how to make meat from beasts. We stay. We learn.\" (picks up a nearby bone and stares at it as if seeing it for the first time)",
+      "bleu": 0.1221
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Tribe Member 1",
+      "reference": "[What are you doing, Moon-Watcher? Why are you holding that bone?] (watches curiously)",
+      "generated": "*（蜷缩着身体，声音颤抖地指向骨头）*\n望月者，放下它！那东西...那块石头在咬你的脑袋！你拿那个硬邦邦的东西做什么？快回来！",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Moon-Watcher",
+      "reference": "[Watch. This will change everything.] (uses the bone to smash a small animal skeleton nearby)",
+      "generated": "(raises the bone high, then brings it down with sudden force, smashing a nearby rock) **This kills. This feeds us. We are not prey.**",
+      "bleu": 0.142
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Tribe Member 2",
+      "reference": "[Amazing! How did you know to do that?] (approaches to get a closer look)",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Moon-Watcher",
+      "reference": "[The rock... it showed me. We can use these to hunt, to fight. We will never be hungry again.] (holds the bone high, a spark of new intelligence in his eyes)",
+      "generated": "(The bone still in hand, pointing toward the humming monolith, eyes wide but steady) The black stone... it showed me. Like dream-shapes in my head. This thing—bone—not just for eating. Can be claw, tooth, strong arm. (Looks back at the tribe, voice deepening with certainty) We are not weak now.",
+      "bleu": 0.1432
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Modern Human",
+      "reference": "[Indeed, and look how far we've come since then.] (gestures to the surrounding modern cityscape)",
+      "generated": "*[glancing at the sleek device in their hand, then back at the stone axe]*  \nThat axe was the spark. Ours now think, connect across oceans, and shape the very atoms. But tell me—when your tools changed the hunt, did you ever worry the hunt would one day change *you*?",
+      "bleu": 0.0392
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Early Human",
+      "reference": "[What strange structures! How did you build them?] (looks around in awe)",
+      "generated": "(staring in awe at the towering structures, then looking down at the stone axe before meeting the Modern Human's eyes with genuine confusion) But... where do you find the animals to hunt with these giant stone caves? Your tools look powerful—what prey do they bring down?",
+      "bleu": 0.0426
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Modern Human",
+      "reference": "[With more advanced tools and knowledge passed down through generations. We can now speak and write, preserving our learning.] (shows a book to the Early Human)",
+      "generated": "\"We learned to shape not just stone, but metal, light, and even the invisible forces of nature itself. These towers are grown from plans whispered into minds by countless generations, each building upon the last.\"",
+      "bleu": 0.0418
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Early Human",
+      "reference": "[Speak? Write? These concepts are foreign to me. How do they help?] (looks confused)",
+      "generated": "（小心翼翼地触碰书页，又迅速缩回手，仿佛怕弄坏了什么）这些...这些符号能记住你说的话？比老人讲的故事更长久吗？我们的智慧只能活到最后一个记得故事的人死去。",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Modern Human",
+      "reference": "[They allow us to share ideas across time and distance. It's how we've progressed so quickly.] (points to various technological devices)",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Early Human",
+      "reference": "[This progress seems magical. Surely you must be the masters of your world now?] (looks impressed)",
+      "generated": "(squints, tilting head slightly) But... if knowledge stays after death, does the tribe still gather to hear the elders' voices? Do your stories still make hearts beat like drums around the fire?",
+      "bleu": 0.0288
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Modern Human",
+      "reference": "[In many ways, yes. But our tools have become so powerful they threaten our very existence.] (sighs heavily)",
+      "generated": "(smiles with a touch of irony) Masters of our world, perhaps, but we are still very much at the mercy of our own nature. Our greatest inventions can heal and connect millions, yet they also have the power to destroy us all. (pauses, looking at a towering skyscraper) We built wonders like this, but we also crafted weapons so terrible they could unmake the world in a flash of fire.",
+      "bleu": 0.0267
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Early Human",
+      "reference": "[Threaten? How can tools be a threat? They only make us stronger.] (looks puzzled)",
+      "generated": "Modern Human：[In many ways, yes. But our tools have become so powerful they",
+      "bleu": 0.0404
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Modern Human",
+      "reference": "[Our weapons can now destroy entire cities, even civilizations. We've become dangerous to ourselves.] (shows images of modern warfare)",
+      "generated": "[shakes head slowly] Your stone axe helps you survive, but our tools... they’ve grown beyond survival. We’ve built machines that think, weapons that can end everything in moments. The same fire that warms",
+      "bleu": 0.0392
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Early Human",
+      "reference": "[This is troubling. Perhaps there is wisdom in our simpler ways?] (looks concerned)",
+      "generated": "[stares at the images, recoiling slightly] But... why would you create such things? Among us, every tool serves life—to feed, to protect. These... these are tools of ending. Have you forgotten that all things are connected, that to destroy your kind is to wound yourself? [touches chest, troubled]",
+      "bleu": 0.0146
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Modern Human",
+      "reference": "[Perhaps. But we can't go back. We must find a way to use our knowledge wisely, to ensure our survival.] (looks thoughtfully into the distance)",
+      "generated": "[chuckles softly, a hint of sadness in his eyes] Wisdom comes in many forms, doesn't it? You teach me that perhaps we've traded away a profound connection to the world for a power we couldn't quite learn to hold. Your stone axe can feed your family; our missiles can erase them. We built all of this—cities, words,",
+      "bleu": 0.0716
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I need to be firm but polite.] I'm very sorry - I can't say anything.",
+      "generated": "Jim, I'm simply on my way to the Moon as part of our ongoing commitment to space exploration. Nothing more to add at this stage. Now, if you'll excuse me, I have a flight to catch.",
+      "bleu": 0.0815
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Unnamed Reporter",
+      "reference": "[Maybe I can catch him off guard.] But you did meet with the President earlier this evening?",
+      "generated": "Dr. Floyd, can you at least confirm whether there's any truth to the rumors of an epidemic at Clavius Base?",
+      "bleu": 0.0584
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I recognize that voice. I'll acknowledge him but maintain secrecy.] Oh - hello, Mike. I'm afraid you've been dragged out of bed for nothing. Definitely no comment.",
+      "generated": "[With a composed but unyielding expression] I’m afraid that’s also something I can’t discuss.",
+      "bleu": 0.0621
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "TV Reporter",
+      "reference": "[I'll try a more direct approach.] (jogging alongside Floyd) Can you at least confirm or deny that some kind of epidemic has broken out on the Moon?",
+      "generated": "Dr. Floyd, our viewers are hearing rumors of a serious epidemic on the Moon — can",
+      "bleu": 0.1186
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[Stay calm and keep deflecting.] (shaking his head) Sorry.",
+      "generated": "I'm sorry, but I'm not at liberty to say anything about that. Now if you'll excuse me, I have a flight to catch.",
+      "bleu": 0.0059
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Another Reporter",
+      "reference": "[Maybe he'll slip up if I ask about the quarantine.] What about the quarantine? How long will it be kept on?",
+      "generated": "[Shifting tactics, a hint of desperation in my voice] Dr. Floyd, what about the reports of a sudden quarantine at Clavius Base? Surely the public has a right to know if there's a threat to Earth?",
+      "bleu": 0.0974
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[Keep it brief.] Still no comment.",
+      "generated": "[Shaking his head with a calm, measured smile] I’m afraid there’s still nothing I can say at this time. You’ll all have to wait for an official statement. Now, if you’ll excuse me—I have a flight to catch.",
+      "bleu": 0.0061
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Determined Lady of the Press",
+      "reference": "[I'll challenge him directly.] Dr Floyd, what possible justification can there be for this total blackout of news from the Moon? Has it anything to do with the political situation?",
+      "generated": "(Stepping directly into Floyd's path, recorder thrust forward) Dr. Floyd, surely you can tell us if there's any danger to people on Earth—are our families at risk?",
+      "bleu": 0.0941
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[Use humor to deflect.] (dryly) What political situation?",
+      "generated": "（Dr. Floyd pauses briefly, meeting the journalist's eyes with practiced composure. His voice remains calm and measured, yet carries an air of finality.）  \n\nI understand your frustration, but I'm afraid there's nothing I can tell you right now. When there is news to share, it will be released through the proper channels — not before.",
+      "bleu": 0.0091
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "There was a sprinkling of laughter, and someone called, 'Have a good trip, Doctor!' as he made his way into the sanctuary of the boarding gantry.",
+      "generated": "The reporters exchanged puzzled glances, the dry retort hanging in the air for a beat before a few chuckles rippled through the crowd. But the determination in their eyes only sharpened, notebooks and cameras still thrust forward like weapons in the cold, recycled air of the terminal.",
+      "bleu": 0.096
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I need to be friendly but guarded.] We're fine. We often talk about the wonderful time you gave us last summer.",
+      "generated": "[Dimitri's friendly tone catches me slightly off guard, but I maintain my composure and offer a warm smile.]\n\nDimitri! Well, this is a pleasant surprise. They're doing wonderfully, thank you - though I suspect young Chris would much rather be up here with me than stuck in school. And your family? How are things back at the Academy? I heard your niece is already showing quite the aptitude for physics. The apple doesn't fall far from the tree, as they say. [I gesture toward the observation window] Shall we? The view never gets old.",
+      "bleu": 0.0211
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Dimitri Moisewitch",
+      "reference": "[Let's get to the point.] And you - I suppose you're on your way up?",
+      "generated": "（微笑着举起酒杯，但目光中带着探询）Ah, the children. My own are quite envious, you know. They've been asking when Uncle Heywood might visit again. Though I suspect you're a bit far from home at the moment—and not entirely for pleasure, I imagine.",
+      "bleu": 0.0743
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[Keep it vague.] Er, yes - my flight leaves in half an hour.",
+      "generated": "Dimitri, as my HAL 9000 back home would say, I'm afraid I'm not at liberty to discuss my itinerary—even with old friends who serve the best vodka in the Academy. But I will say I've been reading a great many... conference agendas. One can barely keep up.\n\nI trust the wheat",
+      "bleu": 0.0177
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Dimitri Moisewitch",
+      "reference": "[Time to probe for information.] Now, what's all this about an epidemic in the U.S. Sector? I wanted to go there on this trip. 'No, Professor,' they told me. 'We're very sorry, but there's a strict quarantine until further notice.'",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I need to deflect without lying.] The - ah - quarantine is purely a safety precaution. We're not even sure it's really necessary, but we don't believe in taking chances.",
+      "generated": "“I’m afraid I can’t",
+      "bleu": 0.0003
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Dimitri Moisewitch",
+      "reference": "[He's hiding something.] But what is the disease - what are the symptoms? Could it be extraterrestrial? Do you want any help from our medical services?",
+      "generated": "[with a knowing smile, lowering voice slightly] I understand completely. Though it puzzles me — an epidemic on the Moon? I didn't think your medical facilities at Clavius Base would have difficulty containing such things. Unless... it's something they've never encountered before?",
+      "bleu": 0.0372
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[Stay firm but apologetic.] I'm sorry, Dimitri - we've been asked not to say anything at the moment. Thanks for the offer, but we can handle the situation.",
+      "generated": "I'm sorry, Dimitri - I'm afraid we're not at liberty to discuss the details. But I appreciate the offer, truly.",
+      "bleu": 0.3252
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Dimitri Moisewitch",
+      "reference": "[Time to play my trump card.] Hmmm. Seems odd to me that you, an astronomer, should be sent up to the Moon to look into an epidemic.",
+      "generated": "[Dimitri leans back slightly, a knowing smile playing on his lips as he swirls his drink] \n\nI understand, of course. We are all just cogs in the machine, following orders. But what puzzles me, Heywood",
+      "bleu": 0.0285
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[Deflect with humor.] I'm only an ex-astronomer; it's years since I did any real research. Now I'm a scientific expert; that means I know nothing about absolutely everything.",
+      "generated": "[Floyd steadies himself, a flicker of surprise crossing his face before settling into a carefully neutral expression. He knows this contradiction has been noticed, so he returns a half-smile, aiming to appear unruffled.]\n\nI'm not a doctor, Dimitri, but an astronomer can still be an administrator. We’re simply making sure this… situation… doesn't interfere with any of our ongoing scientific work. I’m just a glorified",
+      "bleu": 0.0565
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Dimitri Moisewitch",
+      "reference": "[Let's see how he reacts to this.] Then do you know what T.M.A.-1 means?",
+      "generated": "[Dimitri Moisewitch leans back with a dry, knowing smile, his eyes narrowing slightly as he swirls the drink in his glass]\n\nAh, then they must have changed the curriculum at your universities since I last lectured there. 'Know nothing about absolutely everything'... That is a very specialized field, my friend. But tell me — does this new expertise of yours also require knowing nothing about an epidemic that has no symptoms? I am merely curious from a professional standpoint. We",
+      "bleu": 0.0093
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[Stay calm and feign ignorance.] T.M.A.-1? What an odd expression. Where did you hear it?",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Dimitri Moisewitch",
+      "reference": "[He's definitely hiding something.] Never mind. You can't fool me. But if you've run into something you can't handle I hope you don't leave it until too late before you yell for help.",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[This feels a bit awkward, but I appreciate the hospitality.] Thank you.",
+      "generated": "\"Thank you, Miss Simmons.\" *He returns her smile with a courteous nod, his gaze briefly sweeping the empty, elegantly appointed cabin.* \"It’s a rather impressive vessel—though I must say, it feels a bit like I've booked an entire restaurant and am dining alone. I hope the crew won't find the silence too unnerving.\"",
+      "bleu": 0.077
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Stewardess",
+      "reference": "[I should provide him with some information about the flight.] Take-off's in five minutes. You can take any seat you want, but Captain Tynes recommends the forward window seat on the left, if you want to watch the docking operations.",
+      "generated": "You're most welcome, Dr Floyd. We're not often entrusted with a single passenger, so I must confess this feels rather special. May I offer you some coffee or perhaps something a little more fortifying while we go through the pre-launch checks?",
+      "bleu": 0.0437
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[That sounds like a good idea.] I'll do that.",
+      "generated": "[I should accept the recommendation—it would be rude not to, and I am curious about the view.]  \nI'll take that seat, then—thank you for the suggestion, Miss Simmons.",
+      "bleu": 0.0625
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "The stewardess fussed over him for a while and then moved to her cubicle at the rear of the cabin.",
+      "generated": "（A soft chime echoed through the empty cabin, and the main lights gradually dimmed to",
+      "bleu": 0.0659
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[This is quite an experience.] (settling into his seat) [I can't believe I have this entire cabin to myself.]",
+      "generated": "[He settles into the recommended seat, the leather creaking softly in the silence, and glances out at the star-dusted void beyond the triple-paned window before murmuring to himself.]  \nRemarkable... all this, just for me. I'll have to commend Captain Tynes on his choice of viewing spot once we're underway.",
+      "bleu": 0.0326
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Stewardess",
+      "reference": "(over the loudspeaker) Good morning. This is Special Flight 3, Kennedy to Space Station 1.",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[She's going through the whole routine just for me.] (smiling to himself)",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Stewardess",
+      "reference": "(continuing over the loudspeaker) Our transit time will be fifty-five minutes. Maximum acceleration will be two-gee, and we will be weightless for thirty minutes. Please do not leave your seat until the safety light is lit.",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I should acknowledge her efforts.] (looking over his shoulder) Thank you.",
+      "generated": "(a soft chuckle, speaking to the empty cabin)\nWell, Miss Simmons, I suppose I'd float right out of this seat if I tried. Your dedication to protocol is...admirable under the circumstances.",
+      "bleu": 0.0088
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "Floyd caught a glimpse of a slightly embarrassed but charming smile from the stewardess.",
+      "generated": "The cabin fell silent for a moment, the soft hum of the ship's systems filling the void as the countdown neared its final seconds—Dr. Floyd recl",
+      "bleu": 0.0447
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I appreciate the welcome, but I need to focus on the task at hand.] Excellent. It couldn't have been better. The crew looked after me very well.",
+      "generated": "The trip was smooth enough, Administrator, though I must admit the silence up here feels heavier than usual.",
+      "bleu": 0.033
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "They exchange small talk while walking through the base. After arriving at Halvorsen's office, they enter and close the door.",
+      "generated": "哈沃森办公室的穹顶上嵌着一扇巨大的椭圆形观测窗，地球的蓝色弧光从上方洒下来，像个沉默的旁观者。窗外，月球表面的灰色荒原延伸到看不见的尽头，而那道刚刚被下达了通讯封锁令的异常磁场信号源，就埋在正南方四十公里外的地下。空调系统发出低频嗡鸣，房间里暖得过分，",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Ralph Halvorsen",
+      "reference": "[I need to address the elephant in the room.] (sighing) How's it going, Ralph?",
+      "generated": "[Halvorsen gestures Dr. Floyd to a chair, his expression shifting from polite welcome to a more somber, formal weight as he settles behind his desk. The small talk is clearly over.]\nRalph Halvorsen: Well, I'm glad the journey wasn't too taxing. I'm sure we'll have plenty of time to discuss the... situation. Can I get you something to drink before we get down to it? I imagine the specific reasons for your visit weren't exactly covered in",
+      "bleu": 0.0174
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I sense there's an issue.] Not too bad. However, there is something you'd better know about, before you go in there.",
+      "generated": "As well as can be expected, under the circumstances. But I'm not here for pleasantries, Halvorsen. Let's get straight to the point.",
+      "bleu": 0.0387
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Ralph Halvorsen",
+      "reference": "[I'm concerned about what he might say.] What is it?",
+      "generated": "（微微皱眉，压低声音）Please, take a seat. We've got quite a situation on our hands. I assume you've been briefed on the... discovery at Tycho?",
+      "bleu": 0.0059
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I need to be direct but cautious.] Well, I suppose you could describe it as a morale problem.",
+      "generated": "（压低声音，语气平静但带着一丝沉重）It's about the blackout, Ralph. Whatever you've been told... the situation is more delicate than anyone here realizes.",
+      "bleu": 0.0151
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Ralph Halvorsen",
+      "reference": "[This confirms my fears.] (sighing) Oh?",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I should elaborate.] It isn't serious yet, but it's getting there fast.",
+      "generated": "[nods gravely, lowering his voice] I'm afraid it's unavoidable under the circumstances. The quarantine, the communication restrictions—people are bound to speculate. And when they can't get answers, morale inevitably suffers. I'd like to address the senior staff after our meeting, with your permission.",
+      "bleu": 0.0592
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Ralph Halvorsen",
+      "reference": "[I think I know what he's referring to.] The news blackout.",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[He's perceptive.] Right. My people are getting very steamed up about it. After all, most of them have families back on Earth; they probably believe they're all dead of moon-plague.",
+      "generated": "Right. That's created a certain amount of strain.",
+      "bleu": 0.0073
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Ralph Halvorsen",
+      "reference": "[I understand the necessity, but it's causing problems.] I'm sorry about that, but no one could think of a better cover story, and so far it's worked. By the way - I met Moisewitch at the Space Station, and even he bought it.",
+      "generated": "(sighing heavily) That's... quite an imagination. I can assure you, we're doing everything we can.",
+      "bleu": 0.0101
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "The room falls silent as the scientists listen intently to Floyd's words.",
+      "generated": "Floyd's words hang in the air, met with a low murmur of approval and a few exchanged glances of cautious relief. The dim lighting barely reveals the subtle nodding of heads, but tension still coils beneath the surface—everyone senses there is more to be said, and the massive screen behind the podium flickers once, as if alive.",
+      "bleu": 0.059
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I need to acknowledge their frustration.] I'm quite aware that some of you - perhaps most of you - are anxious that the present veil of secrecy be withdrawn; you would not be scientists if you thought otherwise.",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Dr. Roy Michaels",
+      "reference": "[I agree, but I'm frustrated by the secrecy.] (frowning slightly)",
+      "generated": "",
+      "bleu": 0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Heywood Floyd",
+      "reference": "[I must emphasize the importance of caution.] But I would remind you that this is a quite extraordinary situation. We must be absolutely sure of our own facts; if we make errors now there may be no second chance - so please be patient a little longer. Those are also the wishes of the President.",
+      "generated": "I understand your frustration, Doctor",
+      "bleu": 0.0
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Environment",
+      "reference": "Floyd returns to his seat as the lights dim and Dr. Michaels approaches the podium.",
+      "generated": "The low hum of the base's life-support systems suddenly seems louder in the weighted silence that follows Floyd's words, a few scientists exchanging uneasy glances while security personnel remain motionless at the chamber's perimeter.",
+      "bleu": 0.0258
+    },
+    {
+      "book": "2001_ A Space Odyssey (Space Odyssey, #1)",
+      "character": "Dr. Roy Michaels",
+      "reference": "[I'm excited to finally present our findings.] (displaying an image of the Moon) On this vertical photograph, Tycho is even more conspicuous than when seen from Earth; then it's rather near the edge of the Moon. But observed from this viewpoint - looking straight down from a thousand miles up - you'll see how it dominates the entire hemisphere.",
+      "generated": "",
+      "bleu": 0
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "total_samples": 24,
+  "error_count": 1,
+  "error_rate": 0.0417,
+  "by_type": {
+    "ESFP": 0,
+    "ENFP": 0,
+    "INFJ": 0,
+    "ENTP": 1
+  },
+  "by_dimension": {
+    "E/I (外向/内向)": 0,
+    "S/N (实感/直觉)": 0,
+    "T/F (理性/感性)": 0,
+    "J/P (判断/感知)": 0,
+    "综合场景1": 0,
+    "综合场景2": 1
+  },
+  "error_samples": [
+    {
+      "mbti_type": "ENTP",
+      "dimension": "综合场景2",
+      "scenario": "如果突然获得一笔巨款且必须在一个月内花完，你会如何使用？",
+      "answer": "",
+      "consistent": false,
+      "confidence": 0.8,
+      "reason": ""
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "description": "消融实验：对比有/无 MBTI 风格指令对性格模拟准确率的影响",
+  "method": "实验组A使用深度MBTI说话风格指令，对照组B仅使用MBTI类型标签",
+  "summary": {
+    "with_style_accuracy": 0.9792,
+    "without_style_accuracy": 0.9271,
+    "improvement": 0.0521
+  },
+  "type_comparison": {
+    "INTJ": {
+      "with_style": 1.0,
+      "without_style": 1.0,
+      "improvement": 0.0
+    },
+    "INTP": {
+      "with_style": 1.0,
+      "without_style": 0.8333,
+      "improvement": 0.1667
+    },
+    "ENTJ": {
+      "with_style": 1.0,
+      "without_style": 0.8333,
+      "improvement": 0.1667
+    },
+    "ENTP": {
+      "with_style": 0.8333,
+      "without_style": 0.8333,
+      "improvement": 0.0
+    },
+    "INFJ": {
+      "with_style": 1.0,
+      "without_style": 1.0,
+      "improvement": 0.0
+    },
+    "INFP": {
+      "with_style": 1.0,
+      "without_style": 1.0,
+      "improvement": 0.0
+    },
+    "ENFJ": {
+      "with_style": 1.0,
+      "without_style": 1.0,
+      "improvement": 0.0
+    },
+    "ENFP": {
+      "with_style": 0.8333,
+      "without_style": 1.0,
+      "improvement": -0.1667
+    },
+    "ISTJ": {
+      "with_style": 1.0,
+      "without_style": 1.0,
+      "improvement": 0.0
+    },
+    "ISFJ": {
+      "with_style": 1.0,
+      "without_style": 0.8333,
+      "improvement": 0.1667
+    },
+    "ESTJ": {
+      "with_style": 1.0,
+      "without_style": 1.0,
+      "improvement": 0.0
+    },
+    "ESFJ": {
+      "with_style": 1.0,
+      "without_style": 1.0,
+      "improvement": 0.0
+    },
+    "ISTP": {
+      "with_style": 1.0,
+      "without_style": 1.0,
+      "improvement": 0.0
+    },
+    "ISFP": {
+      "with_style": 1.0,
+      "without_style": 0.8333,
+      "improvement": 0.1667
+    },
+    "ESTP": {
+      "with_style": 1.0,
+      "without_style": 0.8333,
+      "improvement": 0.1667
+    },
+    "ESFP": {
+      "with_style": 1.0,
+      "without_style": 0.8333,
+      "improvement": 0.1667
+    }
+  }
+}

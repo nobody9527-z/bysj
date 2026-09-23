@@ -1,0 +1,138 @@
+/* 全局重置，统一浏览器样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+/* 全局隐藏滚动条 */
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* 页面背景 */
+body {
+  background-color: #f7f8fa;
+  min-height: 100vh;
+}
+
+/* 页面容器 */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* 顶部标题栏（毕设专用渐变样式） */
+.header {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #4e8cff, #7c4dff);
+  color: white;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* 聊天主容器 */
+.chat-box {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 聊天历史区 */
+.chat-history {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* 消息通用样式 */
+.message {
+  margin-bottom: 18px;
+  max-width: 75%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+/* 用户消息（右侧蓝色气泡） */
+.user-message {
+  background: #4e8cff;
+  color: white;
+  margin-left: auto;
+}
+
+/* AI消息（左侧浅灰气泡） */
+.ai-message {
+  background: #f1f3f5;
+  color: #2c3e50;
+  margin-right: auto;
+}
+
+/* 输入框区域 */
+.input-box {
+  display: flex;
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  gap: 12px;
+  background: #fafafa;
+}
+
+/* 输入框样式 */
+input {
+  flex: 1;
+  padding: 12px 18px;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: #4e8cff;
+}
+
+/* 发送按钮 */
+button {
+  padding: 12px 24px;
+  background: #4e8cff;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #3a7cff;
+}
+
+/* 滚动条美化 */
+.chat-history::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 3px;
+}
+
+.chat-history::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
