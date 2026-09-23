@@ -14,7 +14,6 @@
       </nav>
     </header>
 
-    <!-- ==================== 对话页 ==================== -->
     <main v-if="activeTab === 'chat'" class="chat-main">
       <div class="chat-header">
         <div class="coser-select-wrapper">
@@ -93,9 +92,7 @@
       </div>
     </main>
 
-    <!-- ==================== 评估页 ==================== -->
     <main v-if="activeTab === 'eval'" class="eval-main">
-      <!-- ========== MBTI 评估 ========== -->
       <div class="eval-section">
         <h2>📊 MBTI 性格模拟准确率评估</h2>
         <p class="eval-desc">任务书技术指标：评价大模型对MBTI性格模拟的效果，采用准确率作为指标</p>
@@ -131,7 +128,6 @@
         </div>
       </div>
 
-      <!-- ========== BLEU 评估 ========== -->
       <div class="eval-section">
         <h2>📈 BLEU 对话质量评估</h2>
         <p class="eval-desc">任务书要求：采用BLEU等作为评价指标，基于COSER数据集评估对话生成质量</p>
@@ -171,7 +167,6 @@
         </div>
       </div>
 
-      <!-- ========== 消融实验 ========== -->
       <div class="eval-section">
         <h2>🔬 消融实验</h2>
         <p class="eval-desc">对比验证MBTI风格指令的有效性：A组（有风格指令）vs B组（仅MBTI标签）</p>
@@ -210,7 +205,6 @@
         </div>
       </div>
 
-      <!-- ========== 错误分析 ========== -->
       <div class="eval-section">
         <h2>🔍 错误分析</h2>
         <p class="eval-desc">MBTI评估中被判为不一致的样本分布（数据来自MBTI评估结果）</p>
@@ -228,7 +222,6 @@
       </div>
     </main>
 
-    <!-- ==================== 记录页 ==================== -->
     <main v-if="activeTab === 'history'" class="history-main">
       <div class="history-section">
         <h2>💾 已保存角色配置</h2>
@@ -320,15 +313,12 @@ import CharacterConfigDialog from "./components/CharacterConfigDialog.vue";
 
 const API_BASE = "http://localhost:8000";
 
-// ===================== 标签页 =====================
 const activeTab = ref("chat");
 
-// DOM
 const chatBoxRef = ref(null);
 const inputRef = ref(null);
 const dialogVisible = ref(false);
 
-// MBTI类型列表
 const mbtiTypes = [
   { code: "INTJ", description: "建筑师" }, { code: "INTP", description: "逻辑学家" },
   { code: "ENTJ", description: "指挥官" }, { code: "ENTP", description: "辩论家" },
@@ -340,14 +330,12 @@ const mbtiTypes = [
   { code: "ESTP", description: "企业家" }, { code: "ESFP", description: "表演者" },
 ];
 
-// ===================== 角色配置 =====================
 const character = reactive({
   name: "", mbti: "", intro: "", personality: "", career: "", experience: "",
 });
 const activeSystemPrompt = ref("");
-const currentRoleName = ref("");  // 空字符串 = 未选择角色
+const currentRoleName = ref("");
 
-// ===================== 默认角色 =====================
 const defaultCharacters = ref([]);
 const previewChar = ref(null);
 
@@ -362,7 +350,6 @@ const loadDefaultCharacters = async () => {
 
 const selectDefaultChar = (charData) => {
   previewChar.value = charData;
-  // 将默认角色数据填入 character 配置
   Object.assign(character, {
     name: charData.name,
     mbti: charData.mbti,
@@ -371,14 +358,12 @@ const selectDefaultChar = (charData) => {
     career: charData.career || "",
     experience: charData.experience || "",
   });
-  // 生成系统提示词
   activeSystemPrompt.value = generateSystemPrompt(character);
   currentRoleName.value = charData.name;
-  // 清空选择器
   selectedCoser.value = null;
   messages.value = [];
   history.value = [];
-  activeConversationId.value = null;  // 新对话
+  activeConversationId.value = null;
   loadMemories();
 };
 
@@ -393,14 +378,12 @@ const resetCharacter = () => {
   activeConversationId.value = null;
 };
 
-// ===================== 聊天状态 =====================
 const userInput = ref("");
 const messages = ref([]);
 const activeConversationId = ref(null);  // 追踪当前对话记录ID，用于更新而非新建
 const history = ref([]);
 const isLoading = ref(false);
 
-// ===================== COSER =====================
 const coserList = ref([]);
 const selectedCoser = ref(null);
 
@@ -413,23 +396,19 @@ const loadCoserData = async () => {
 
 const selectCoserRole = () => {
   if (!selectedCoser.value) {
-    // 取消COSER选择，回到未选择状态
     resetCharacter();
   } else {
-    // 选中COSER角色
     previewChar.value = null;
     activeSystemPrompt.value = selectedCoser.value.prompt;
     currentRoleName.value = selectedCoser.value.name;
-    // 从COSER数据中提取角色信息填入character
     character.name = selectedCoser.value.name || "";
     character.mbti = selectedCoser.value.mbti || "";
     messages.value = []; history.value = [];
-    activeConversationId.value = null;  // 新对话
+    activeConversationId.value = null;
     loadMemories();
   }
 };
 
-// ===================== 系统提示词 =====================
 const generateSystemPrompt = (config) => {
   return `你现在扮演以下人物，必须100%严格贴合设定，完全代入角色：
 
@@ -455,11 +434,10 @@ const handleSaveConfig = (newConfig) => {
   activeSystemPrompt.value = generateSystemPrompt(newConfig);
   currentRoleName.value = newConfig.name || "自定义角色";
   messages.value = []; history.value = [];
-  activeConversationId.value = null;  // 新配置，新对话
+  activeConversationId.value = null;
   loadMemories();
 };
 
-// ===================== 发送消息 =====================
 const sendMessage = async () => {
   const content = userInput.value.trim();
   if (!content || isLoading.value) return;
@@ -480,7 +458,6 @@ const sendMessage = async () => {
     isLoading.value = false;
     nextTick(() => { if (chatBoxRef.value) chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight; });
   }
-  // 自动保存对话记录
   if (history.value.length > 0 && history.value.length % 4 === 0) {
     autoSaveConversation();
   }
@@ -494,13 +471,11 @@ const autoSaveConversation = async () => {
       title: `${ character.name || currentRoleName.value }的对话_${new Date().toLocaleDateString()}`,
     };
     if (activeConversationId.value) {
-      // 继续历史对话 → 更新已有记录
       await axios.put(`${API_BASE}/api/conversations/${activeConversationId.value}`, payload);
     } else {
-      // 新对话 → 创建新记录
       const res = await axios.post(`${API_BASE}/api/conversations`, payload);
       if (res.data.code === 200) {
-        activeConversationId.value = res.data.data.id;  // 记录ID以便后续更新
+        activeConversationId.value = res.data.data.id;
       }
     }
   } catch (err) { /* 静默失败 */ }
@@ -515,7 +490,6 @@ const saveCurrentConversation = async () => {
   }
 };
 
-// ===================== 导出 =====================
 const exportChat = async (format) => {
   try {
     const res = await axios.post(`${API_BASE}/api/export`, {
@@ -532,7 +506,6 @@ const exportChat = async (format) => {
   } catch (err) { alert("导出失败，请检查后端服务"); }
 };
 
-// ===================== 角色保存/加载 =====================
 const saveCurrentCharacter = async () => {
   try {
     await axios.post(`${API_BASE}/api/characters`, {
@@ -572,7 +545,6 @@ const deleteCharacter = async (id) => {
   loadSavedCharacters();
 };
 
-// ===================== 对话记录 =====================
 const savedConversations = ref([]);
 const viewingConversation = ref(null);
 
@@ -595,7 +567,6 @@ const continueConversation = async (id) => {
     const res = await axios.get(`${API_BASE}/api/conversations/${id}`);
     if (res.data.code !== 200) { alert("加载对话失败"); return; }
     const conv = res.data.data;
-    // 恢复角色配置
     const charData = conv.character || {};
     Object.assign(character, {
       name: charData.name || "",
@@ -605,21 +576,14 @@ const continueConversation = async (id) => {
       intro: charData.intro || "",
       experience: charData.experience || "",
     });
-    // 生成系统提示词
     activeSystemPrompt.value = generateSystemPrompt(character);
     currentRoleName.value = charData.name || "历史角色";
-    // 恢复对话消息
     messages.value = [...(conv.history || [])];
     history.value = [...(conv.history || [])];
-    // 清除COSER选择
     selectedCoser.value = null;
-    // 记录当前对话ID，后续保存时更新而非新建
     activeConversationId.value = id;
-    // 切换到对话页
     activeTab.value = "chat";
-    // 加载该角色的记忆
     loadMemories();
-    // 滚动到底部
     nextTick(() => { if (chatBoxRef.value) chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight; });
   } catch (err) { alert("继续对话失败：" + err.message); }
 };
@@ -630,7 +594,6 @@ const deleteConversation = async (id) => {
   loadConversations();
 };
 
-// ===================== 对话记忆 =====================
 const memoryCount = ref(0);
 const memories = ref([]);
 const showMemories = ref(false);
@@ -669,13 +632,11 @@ const extractMemories = async () => {
 const deleteMemory = async (index) => {
   memories.value.splice(index, 1);
   memoryCount.value = memories.value.length;
-  // 同步删除后端
   try {
     await axios.delete(`${API_BASE}/api/memory/${encodeURIComponent(currentRoleName.value)}/${index}`);
   } catch (err) { /* 静默 */ }
 };
 
-// ===================== 评估 =====================
 const mbtiRunning = ref(false);
 const bleuRunning = ref(false);
 const mbtiEvalResult = ref(null);
@@ -683,15 +644,12 @@ const mbtiTypeAccuracy = ref(null);
 const bleuEvalResult = ref(null);
 const bleuMbtiType = ref("");
 
-// toggleMbti：加载/收起/展开三态切换
 const toggleMbti = () => {
   if (mbtiRunning.value) return;
   if (mbtiEvalResult.value) {
-    // 已有数据，切换显示/隐藏
     showMbtiDetail.value = !showMbtiDetail.value;
     return;
   }
-  // 首次加载
   loadMbtiResult();
 };
 const loadMbtiResult = async () => {
@@ -702,7 +660,6 @@ const loadMbtiResult = async () => {
       mbtiEvalResult.value = latestRes.data.data.summary;
       mbtiTypeAccuracy.value = latestRes.data.data.type_accuracy;
       showMbtiDetail.value = true;
-      // 同步加载错误分析
       try {
         const errRes = await axios.get(`${API_BASE}/api/eval/mbti/error_analysis`);
         if (errRes.data.code === 200) errorAnalysis.value = errRes.data.data;
@@ -741,7 +698,6 @@ const loadMbtiResult = async () => {
   finally { mbtiRunning.value = false; }
 };
 
-// 强制在线重新评估（跳过缓存）
 const runMbtiEvalStream = async () => {
   mbtiRunning.value = true; mbtiEvalResult.value = null; mbtiTypeAccuracy.value = null; errorAnalysis.value = null;
   try {
@@ -765,7 +721,6 @@ const runMbtiEvalStream = async () => {
             mbtiEvalResult.value = data.summary;
             mbtiTypeAccuracy.value = data.type_accuracy;
             showMbtiDetail.value = true;
-            // 流式完成后从文件加载错误分析（后端已保存）
             try {
               const errRes = await axios.get(`${API_BASE}/api/eval/mbti/error_analysis`);
               if (errRes.data.code === 200) errorAnalysis.value = errRes.data.data;
@@ -778,7 +733,6 @@ const runMbtiEvalStream = async () => {
   finally { mbtiRunning.value = false; }
 };
 
-// toggleBleu：加载/收起/展开三态切换
 const toggleBleu = () => {
   if (bleuRunning.value) return;
   if (bleuEvalResult.value) {
@@ -829,7 +783,6 @@ const loadBleuResult = async () => {
   finally { bleuRunning.value = false; }
 };
 
-// 强制在线重新评估（跳过缓存，尊重MBTI类型选择）
 const runBleuEvalStream = async () => {
   bleuRunning.value = true; bleuEvalResult.value = null;
   const selectedMbti = bleuMbtiType.value || null;
@@ -862,17 +815,14 @@ const runBleuEvalStream = async () => {
   finally { bleuRunning.value = false; }
 };
 
-// 消融实验
 const ablationRunning = ref(false);
 const ablationResult = ref(null);
 const ablationTypeComparison = ref(null);
 
-// 折叠状态——初始收起，点击按钮加载后才展开
 const showMbtiDetail = ref(false);
 const showBleuDetail = ref(false);
 const showAblationDetail = ref(false);
 
-// toggleAblation：加载/收起/展开三态切换
 const toggleAblation = () => {
   if (ablationRunning.value) return;
   if (ablationResult.value) {
@@ -896,7 +846,6 @@ const loadAblationResult = async () => {
   finally { ablationRunning.value = false; }
 };
 
-// 消融在线流式评估
 const runAblationStream = async () => {
   ablationRunning.value = true; ablationResult.value = null; ablationTypeComparison.value = null;
   showAblationDetail.value = true;
@@ -928,7 +877,6 @@ const runAblationStream = async () => {
   finally { ablationRunning.value = false; }
 };
 
-// 错误分析
 const errorAnalysis = ref(null);
 const showErrorDetail = ref(false);
 
@@ -968,7 +916,6 @@ const loadEvalHistory = async () => {
   } catch (err) { /* 静默 */ }
 };
 
-// ===================== 初始化 =====================
 onMounted(() => {
   loadDefaultCharacters();
   loadCoserData();
@@ -980,7 +927,6 @@ onMounted(() => {
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-/* ==================== 全局 ==================== */
 .app-container { width: 100vw; height: 100vh; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%); display: flex; flex-direction: column; overflow: hidden; }
 
 .top-header { padding: 20px 24px 12px; text-align: center; color: white; }
@@ -992,7 +938,6 @@ onMounted(() => {
 .tab-btn:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.6); transform: translateY(-1px); }
 .tab-btn.active { background: white; color: #6366f1; border-color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(-1px); }
 
-/* ==================== 对话页 ==================== */
 .chat-main { width: 92%; max-width: 1100px; margin: 0 auto; flex: 1; background: rgba(255,255,255,0.97); backdrop-filter: blur(10px); border-radius: 20px 20px 0 0; box-shadow: 0 -8px 30px rgba(0,0,0,0.12); display: flex; flex-direction: column; overflow: hidden; }
 .chat-header { padding: 14px 22px; border-bottom: 1px solid #f1f5f9; background: #fafbfc; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .coser-select-wrapper { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569; flex: 1; min-width: 200px; }
@@ -1048,7 +993,6 @@ onMounted(() => {
 .memory-del { border: none; background: #fee2e2; color: #ef4444; border-radius: 6px; cursor: pointer; font-size: 12px; padding: 3px 8px; transition: background 0.15s; }
 .memory-del:hover { background: #fecaca; }
 
-/* ==================== 评估页 ==================== */
 .eval-main { width: 92%; max-width: 1100px; margin: 0 auto; flex: 1; background: rgba(255,255,255,0.97); backdrop-filter: blur(10px); border-radius: 20px 20px 0 0; box-shadow: 0 -8px 30px rgba(0,0,0,0.12); padding: 28px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
 .eval-section { background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 16px; padding: 24px; transition: box-shadow 0.2s; }
 .eval-section:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
@@ -1074,7 +1018,6 @@ onMounted(() => {
 .type-bar-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a855f7); border-radius: 12px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); min-width: 4px; }
 .type-score { font-size: 12px; color: #64748b; width: 70px; font-weight: 500; }
 
-/* ==================== 记录页 ==================== */
 .history-main { width: 92%; max-width: 1100px; margin: 0 auto; flex: 1; background: rgba(255,255,255,0.97); backdrop-filter: blur(10px); border-radius: 20px 20px 0 0; box-shadow: 0 -8px 30px rgba(0,0,0,0.12); padding: 28px; overflow-y: auto; display: flex; flex-direction: column; gap: 28px; }
 .history-section h2 { font-size: 17px; font-weight: 700; color: #1e293b; margin-bottom: 12px; }
 .history-card { background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 12px; padding: 16px 20px; margin: 8px 0; transition: box-shadow 0.2s, transform 0.15s; }
@@ -1128,7 +1071,6 @@ onMounted(() => {
 .view-foot-btn.primary { background: #6366f1; color: #fff; border-color: #6366f1; font-weight: 600; }
 .view-foot-btn.primary:hover { background: #4f46e5; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(99,102,241,0.3); }
 
-/* ==================== 默认角色选择 ==================== */
 .default-char-section { width: 92%; max-width: 1100px; margin: 0 auto; padding: 20px 0; }
 .default-char-section h3 { font-size: 16px; color: #475569; margin-bottom: 16px; font-weight: 500; }
 .default-char-section h3 a { color: #6366f1; font-weight: 600; }
@@ -1141,7 +1083,6 @@ onMounted(() => {
 .char-card-career { font-size: 12px; color: #64748b; margin-bottom: 6px; }
 .char-card-intro { font-size: 11px; color: #94a3b8; line-height: 1.5; }
 
-/* ==================== 当前角色信息条 ==================== */
 .current-role-bar { width: 92%; max-width: 1100px; margin: 0 auto 8px; padding: 10px 18px; background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: 1px solid #c7d2fe; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #4338ca; }
 .current-role-bar button { padding: 5px 14px; background: white; border: 1px solid #c7d2fe; border-radius: 7px; color: #6366f1; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.15s; }
 .current-role-bar button:hover { background: #6366f1; color: white; border-color: #6366f1; }

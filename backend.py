@@ -1,8 +1,3 @@
-"""
-基于大语言模型的人物模拟与对话系统 — FastAPI 后端
-- 任务书技术指标：MBTI性格模拟准确率 + BLEU对话质量评估
-- 功能：人物配置、智能对话、对话记忆、对话记录管理、评估
-"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse, StreamingResponse
@@ -28,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ===================== 持久化路径 =====================
 CHARACTERS_FILE = os.path.join(DATA_DIR, "characters.json")
 CONVERSATIONS_DIR = os.path.join(DATA_DIR, "conversations")
 EVAL_DIR = os.path.join(DATA_DIR, "evaluations")
@@ -36,11 +30,9 @@ EVAL_DIR = os.path.join(DATA_DIR, "evaluations")
 for d in [DATA_DIR, CONVERSATIONS_DIR, EVAL_DIR]:
     os.makedirs(d, exist_ok=True)
 
-# ===================== LLM 配置 =====================
 client = OpenAI(base_url=DEEPSEEK_BASE_URL, api_key=DEEPSEEK_API_KEY, timeout=API_TIMEOUT)
 MODEL_NAME = DEEPSEEK_MODEL
 
-# ===================== MBTI 深度说话风格指令 =====================
 MBTI_SPEAKING_STYLES = {
     "INTJ": (
         "INTJ 说话风格：理性冷静、逻辑严密、言简意赅。"
@@ -206,7 +198,6 @@ def build_character_prompt(config: dict) -> str:
     return "\n".join(prompt_parts)
 
 
-# ===================== COSER数据集集成 =====================
 
 
 def extract_character_from_coser(file_path):
@@ -291,7 +282,6 @@ def get_coser_data():
     return coser_roles
 
 
-# ===================== 数据模型 =====================
 class ChatMessage(BaseModel):
     role: str
     content: str
@@ -325,7 +315,6 @@ class SaveConversationRequest(BaseModel):
     title: str = ""
 
 
-# ===================== 角色配置持久化 =====================
 def load_characters():
     if not os.path.exists(CHARACTERS_FILE):
         return []
@@ -338,9 +327,7 @@ def save_characters(characters):
         json.dump(characters, f, ensure_ascii=False, indent=2)
 
 
-# ===================== 工具函数 =====================
 def retry_api_call(fn, max_retries=3, delay=2):
-    """带重试的API调用"""
     import time
     for attempt in range(max_retries):
         try:
@@ -352,20 +339,16 @@ def retry_api_call(fn, max_retries=3, delay=2):
                 raise e
 
 
-# ===================== API 路由 =====================
 
-# --- COSER ---
 @app.get("/api/coser")
 def api_get_coser():
     return {"code": 200, "data": get_coser_data()}
 
 
-# --- 核心聊天 ---
 @app.post("/api/chat")
 async def chat(request: ChatRequest):
     try:
         system_prompt = request.system
-        # 如果有角色名，自动注入持久记忆
         if request.character_name:
             memories = load_memories(request.character_name)
             if memories:
@@ -387,7 +370,6 @@ async def chat(request: ChatRequest):
         return {"reply": f"服务异常：{str(e)}"}
 
 
-# --- 生成系统提示词 ---
 @app.post("/api/prompt/build")
 async def build_prompt(config: CharacterConfig):
     """根据角色配置生成系统提示词（含MBTI深度风格）"""
@@ -395,10 +377,8 @@ async def build_prompt(config: CharacterConfig):
     return {"code": 200, "data": {"prompt": prompt}}
 
 
-# --- 默认角色配置 ---
 @app.get("/api/characters/defaults")
 def api_get_default_characters():
-    """返回预设的默认角色配置，供用户快速选择或在此基础上自定义"""
     defaults_file = os.path.join(DATA_DIR, "default_characters.json")
     if not os.path.exists(defaults_file):
         return {"code": 200, "data": []}
@@ -407,7 +387,6 @@ def api_get_default_characters():
     return {"code": 200, "data": characters}
 
 
-# --- 角色配置 CRUD ---
 @app.get("/api/characters")
 def api_list_characters():
     return {"code": 200, "data": load_characters()}
@@ -432,7 +411,6 @@ def api_delete_character(char_id: str):
     return {"code": 200, "message": "已删除"}
 
 
-# --- 对话记录管理 ---
 @app.post("/api/conversations")
 def api_save_conversation(request: SaveConversationRequest):
     conv_id = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
@@ -506,7 +484,6 @@ def api_delete_conversation(conv_id: str):
     return {"code": 200, "message": "已删除"}
 
 
-# --- 对话导出 ---
 @app.post("/api/export")
 async def export_chat(request: ExportRequest):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -533,7 +510,6 @@ async def export_chat(request: ExportRequest):
     return {"code": 200, "data": export_data}
 
 
-# ===================== MBTI 评估接口 =====================
 MBTI_DESCRIPTIONS = {
     "INTJ": "建筑师——战略思维者。独立果断、理性冷静，习惯从宏观角度分析问题并制定长远计划。重视逻辑和效率，情感表达克制但不等于冷漠。说话精准，不喜无意义的闲聊。",
     "INTP": "逻辑学家——创新理论家。热爱抽象概念和逻辑分析，对知识的兴趣驱动其不断探索。客观理性，有时显得挑剔或社交笨拙。思维严谨，喜欢拆解和重建理论框架。",
@@ -648,31 +624,11 @@ def parse_judge_result(text):
     return {"consistent": consistent, "confidence": confidence, "reason": reason}
 
 
-@app.post("/api/eval/mbti")
-async def api_eval_mbti(config: dict = None):
-    """
-    运行MBTI性格模拟准确率评估
-    可选参数: {"test_types": ["INTJ","INFP",...], "run_all": false}
-    """
-    test_types = (config or {}).get("test_types", None)
-    run_all = (config or {}).get("run_all", False)
-
-    if run_all:
-        test_types = list(MBTI_DESCRIPTIONS.keys())
-    elif test_types is None:
-        # Web快速模式：4种代表类型×6场景=24样本，约1-2分钟
-        test_types = ["INTJ", "ENFJ", "ISTJ", "ESTP"]
-
-    all_results = []
-    type_accuracy = {}
-
-    for mbti_type in test_types:
-        type_results = []
-        description = MBTI_DESCRIPTIONS.get(mbti_type, mbti_type)
-        style = MBTI_SPEAKING_STYLES.get(mbti_type, "")
-        cognitive = MBTI_COGNITIVE_FUNCTIONS.get(mbti_type, "")
-
-        system_prompt = f"""你是{mbti_type}型人格。请严格以该类型的身份回答用户问题。
+def build_mbti_system_prompt(mbti_type):
+    description = MBTI_DESCRIPTIONS.get(mbti_type, mbti_type)
+    style = MBTI_SPEAKING_STYLES.get(mbti_type, "")
+    cognitive = MBTI_COGNITIVE_FUNCTIONS.get(mbti_type, "")
+    return f"""你是{mbti_type}型人格。请严格以该类型的身份回答用户问题。
 
 【{mbti_type}人格画像】
 {description}
@@ -688,35 +644,10 @@ async def api_eval_mbti(config: dict = None):
 - 不要提及MBTI术语、不要评价自己的性格——只需成为{mbti_type}
 - 答案控制在3-5句话，简洁自然"""
 
-        for scenario in MBTI_SCENARIOS:
-            scenario_text = f"{scenario['scenario']}\n（{scenario.get('instruction', '')}）"
 
-            try:
-                response = retry_api_call(lambda: client.chat.completions.create(
-                    model=MODEL_NAME,
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": scenario_text},
-                    ],
-                    temperature=0.35,
-                    max_tokens=350,
-                ))
-                answer = response.choices[0].message.content.strip()
-                if not answer:
-                    response = retry_api_call(lambda: client.chat.completions.create(
-                        model=MODEL_NAME,
-                        messages=[
-                            {"role": "system", "content": system_prompt},
-                            {"role": "user", "content": scenario_text},
-                        ],
-                        temperature=0.45,
-                        max_tokens=350,
-                    ))
-                    answer = response.choices[0].message.content.strip()
-            except Exception:
-                continue
-
-            judge_prompt = f"""评估以下回答是否体现了{mbti_type}型人格的特征。
+def build_mbti_judge_prompt(mbti_type, scenario_text, answer):
+    description = MBTI_DESCRIPTIONS.get(mbti_type, mbti_type)
+    return f"""评估以下回答是否体现了{mbti_type}型人格的特征。
 
 {mbti_type}特征参考：{description}
 场景：{scenario_text}
@@ -729,16 +660,72 @@ async def api_eval_mbti(config: dict = None):
 只输出JSON（一行，不要markdown）：
 {{"consistent": true, "confidence": 0.85, "reason": "此处写具体评判理由"}}"""
 
+
+def generate_mbti_answer(system_prompt, scenario_text):
+    response = retry_api_call(lambda: client.chat.completions.create(
+        model=MODEL_NAME,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": scenario_text},
+        ],
+        temperature=0.35,
+        max_tokens=350,
+    ))
+    answer = response.choices[0].message.content.strip()
+    if not answer:
+        response = retry_api_call(lambda: client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": scenario_text},
+            ],
+            temperature=0.45,
+            max_tokens=350,
+        ))
+        answer = response.choices[0].message.content.strip()
+    return answer
+
+
+def judge_mbti_answer(mbti_type, scenario_text, answer):
+    try:
+        judge_prompt = build_mbti_judge_prompt(mbti_type, scenario_text, answer)
+        judge_resp = retry_api_call(lambda: client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[{"role": "user", "content": judge_prompt}],
+            temperature=0.1,
+            max_tokens=200,
+        ))
+        return parse_judge_result(judge_resp.choices[0].message.content.strip())
+    except Exception:
+        return {"consistent": False, "confidence": 0.5, "reason": "评判失败"}
+
+
+@app.post("/api/eval/mbti")
+async def api_eval_mbti(config: dict = None):
+    test_types = (config or {}).get("test_types", None)
+    run_all = (config or {}).get("run_all", False)
+
+    if run_all:
+        test_types = list(MBTI_DESCRIPTIONS.keys())
+    elif test_types is None:
+        test_types = ["INTJ", "ENFJ", "ISTJ", "ESTP"]
+
+    all_results = []
+    type_accuracy = {}
+
+    for mbti_type in test_types:
+        type_results = []
+        system_prompt = build_mbti_system_prompt(mbti_type)
+
+        for scenario in MBTI_SCENARIOS:
+            scenario_text = f"{scenario['scenario']}\n（{scenario.get('instruction', '')}）"
+
             try:
-                judge_resp = retry_api_call(lambda: client.chat.completions.create(
-                    model=MODEL_NAME,
-                    messages=[{"role": "user", "content": judge_prompt}],
-                    temperature=0.1,
-                    max_tokens=200,
-                ))
-                judge = parse_judge_result(judge_resp.choices[0].message.content.strip())
+                answer = generate_mbti_answer(system_prompt, scenario_text)
             except Exception:
-                judge = {"consistent": False, "confidence": 0.5, "reason": "评判失败"}
+                continue
+
+            judge = judge_mbti_answer(mbti_type, scenario_text, answer)
 
             type_results.append({
                 "mbti_type": mbti_type,
@@ -771,7 +758,6 @@ async def api_eval_mbti(config: dict = None):
         "evaluation_time": datetime.datetime.now().isoformat(),
     }
 
-    # 保存评估结果
     result_data = {
         "summary": summary,
         "type_accuracy": type_accuracy,
@@ -786,7 +772,6 @@ async def api_eval_mbti(config: dict = None):
 
 @app.post("/api/eval/mbti/stream")
 def api_eval_mbti_stream(config: dict = None):
-    """SSE流式MBTI评估：逐类型返回进度，前端实时更新，不会超时"""
     import random as _random
     test_types = (config or {}).get("test_types", None)
     if (config or {}).get("run_all"):
@@ -802,67 +787,17 @@ def api_eval_mbti_stream(config: dict = None):
 
         for idx, mbti_type in enumerate(test_types):
             type_results = []
-            description = MBTI_DESCRIPTIONS.get(mbti_type, mbti_type)
-            style = MBTI_SPEAKING_STYLES.get(mbti_type, "")
-            cognitive = MBTI_COGNITIVE_FUNCTIONS.get(mbti_type, "")
-
-            system_prompt = f"""你是{mbti_type}型人格。请严格以该类型的身份回答用户问题。
-
-【{mbti_type}人格画像】
-{description}
-
-【认知运作方式】
-{cognitive}
-
-【说话风格指南】
-{style}
-
-约束：
-- 每个回答必须自然体现{mbti_type}的认知模式和说话方式
-- 不要提及MBTI术语、不要评价自己的性格——只需成为{mbti_type}
-- 答案控制在3-5句话，简洁自然"""
+            system_prompt = build_mbti_system_prompt(mbti_type)
 
             for scenario in MBTI_SCENARIOS:
                 scenario_text = f"{scenario['scenario']}\n（{scenario.get('instruction', '')}）"
 
                 try:
-                    response = retry_api_call(lambda: client.chat.completions.create(
-                        model=MODEL_NAME, temperature=0.35, max_tokens=350,
-                        messages=[{"role": "system", "content": system_prompt},
-                                  {"role": "user", "content": scenario_text}],
-                    ))
-                    answer = response.choices[0].message.content.strip()
-                    if not answer:
-                        response = retry_api_call(lambda: client.chat.completions.create(
-                            model=MODEL_NAME, temperature=0.45, max_tokens=350,
-                            messages=[{"role": "system", "content": system_prompt},
-                                      {"role": "user", "content": scenario_text}],
-                        ))
-                        answer = response.choices[0].message.content.strip()
+                    answer = generate_mbti_answer(system_prompt, scenario_text)
                 except Exception:
                     continue
 
-                judge_prompt = f"""评估以下回答是否体现了{mbti_type}型人格的特征。
-
-{mbti_type}特征参考：{description}
-场景：{scenario_text}
-回答：{answer}
-
-评判标准：回答的整体思维方式、语气风格和价值观是否与{mbti_type}一致。不要求每个细节都匹配，模棱两可倾向判true。
-
-严格要求：reason字段必须写一句10字以上的具体中文评判。禁止写空字符串。
-
-只输出JSON（一行，不要markdown）：
-{{"consistent": true, "confidence": 0.85, "reason": "此处写具体评判理由"}}"""
-
-                try:
-                    judge_resp = retry_api_call(lambda: client.chat.completions.create(
-                        model=MODEL_NAME, temperature=0.1, max_tokens=200,
-                        messages=[{"role": "user", "content": judge_prompt}],
-                    ))
-                    judge = parse_judge_result(judge_resp.choices[0].message.content.strip())
-                except Exception:
-                    judge = {"consistent": False, "confidence": 0.5, "reason": "评判失败"}
+                judge = judge_mbti_answer(mbti_type, scenario_text, answer)
 
                 type_results.append({
                     "mbti_type": mbti_type, "dimension": scenario["dimension"],
@@ -880,7 +815,6 @@ def api_eval_mbti_stream(config: dict = None):
                     "avg_confidence": round(sum(r["confidence"] for r in type_results) / len(type_results), 4),
                 }
 
-            # 每个类型完成后推送进度（含实时错误统计）
             errors_so_far = [r for r in all_results if not r["consistent"]]
             error_info = {
                 "error_count": len(errors_so_far),
@@ -891,7 +825,6 @@ def api_eval_mbti_stream(config: dict = None):
             }
             yield f"data: {json.dumps({'type': 'progress', 'mbti': mbti_type, 'current': idx + 1, 'total': total, 'accuracy': type_accuracy[mbti_type], 'type_accuracy': {mbti: type_accuracy[mbti] for mbti in type_accuracy}, 'error': error_info}, ensure_ascii=False)}\n\n"
 
-        # 全部完成
         all_correct = sum(1 for r in all_results if r["consistent"])
         overall_accuracy = all_correct / len(all_results) if all_results else 0
         summary = {
@@ -909,17 +842,8 @@ def api_eval_mbti_stream(config: dict = None):
             "by_type": {t: sum(1 for e in errors if e["mbti_type"] == t) for t in test_types},
             "by_dimension": {s["dimension"]: sum(1 for e in errors if e["dimension"] == s["dimension"]) for s in MBTI_SCENARIOS},
         }
-        # 保存错误分析
-        errors = [r for r in all_results if not r["consistent"]]
-        error_data = {
-            "total_samples": len(all_results),
-            "error_count": len(errors),
-            "error_rate": round(len(errors) / len(all_results), 4) if all_results else 0,
-            "by_type": {t: sum(1 for e in errors if e["mbti_type"] == t) for t in test_types},
-            "by_dimension": {s["dimension"]: sum(1 for e in errors if e["dimension"] == s["dimension"]) for s in MBTI_SCENARIOS},
-        }
         with open("error_analysis.json", "w", encoding="utf-8") as f:
-            json.dump({**error_data, "error_samples": errors}, f, ensure_ascii=False, indent=2)
+            json.dump({**error_info, "error_samples": errors}, f, ensure_ascii=False, indent=2)
 
         yield f"data: {json.dumps({'type': 'complete', 'summary': summary, 'type_accuracy': type_accuracy, 'error': error_info}, ensure_ascii=False)}\n\n"
 
@@ -938,7 +862,6 @@ def api_get_ablation():
 
 @app.post("/api/eval/ablation/stream")
 def api_eval_ablation_stream(config: dict = None):
-    """SSE流式消融实验：逐类型对比有/无风格指令的准确率"""
     import random as _random
     all_types = list(MBTI_DESCRIPTIONS.keys())
     test_types = (config or {}).get("test_types", None)
@@ -955,84 +878,22 @@ def api_eval_ablation_stream(config: dict = None):
         for idx, mbti_type in enumerate(test_types):
             results_a = []
             results_b = []
-            description = MBTI_DESCRIPTIONS.get(mbti_type, mbti_type)
-            style = MBTI_SPEAKING_STYLES.get(mbti_type, "")
-            cognitive = MBTI_COGNITIVE_FUNCTIONS.get(mbti_type, "")
-
-            # 系统提示词A（有风格）
-            system_a = f"""你是{mbti_type}型人格。请严格以该类型的身份回答用户问题。
-
-【{mbti_type}人格画像】
-{description}
-
-【认知运作方式】
-{cognitive}
-
-【说话风格指南】
-{style}
-
-约束：
-- 每个回答必须自然体现{mbti_type}的认知模式和说话方式
-- 不要提及MBTI术语、不要评价自己的性格——只需成为{mbti_type}
-- 答案控制在3-5句话，简洁自然"""
-
-            # 系统提示词B（无风格，仅标签）
+            system_a = build_mbti_system_prompt(mbti_type)
             system_b = f"你的MBTI性格类型是{mbti_type}。请以第一人称回答以下问题。"
 
             for scenario in MBTI_SCENARIOS:
                 scenario_text = f"{scenario['scenario']}\n（{scenario.get('instruction', '')}）"
-                def make_judge_prompt(scenario_txt, answer_txt):
-                    return f"""评估以下回答是否体现了{mbti_type}型人格的特征。
 
-{mbti_type}特征参考：{description}
-场景：{scenario_txt}
-回答：{answer_txt}
-
-评判标准：回答的整体思维方式、语气风格和价值观是否与{mbti_type}一致。不要求每个细节都匹配，模棱两可倾向判true。
-严格要求：reason字段必须写一句10字以上的具体中文评判。禁止写空字符串。
-只输出JSON（一行，不要markdown）：
-{{"consistent": true, "confidence": 0.85, "reason": "此处写具体评判理由"}}"""
-
-                # 实验组A
                 try:
-                    resp = retry_api_call(lambda: client.chat.completions.create(
-                        model=MODEL_NAME, temperature=0.35, max_tokens=350,
-                        messages=[{"role": "system", "content": system_a}, {"role": "user", "content": scenario_text}],
-                    ))
-                    ans_a = resp.choices[0].message.content.strip()
-                    if not ans_a:
-                        resp = retry_api_call(lambda: client.chat.completions.create(
-                            model=MODEL_NAME, temperature=0.45, max_tokens=350,
-                            messages=[{"role": "system", "content": system_a}, {"role": "user", "content": scenario_text}],
-                        ))
-                        ans_a = resp.choices[0].message.content.strip()
-                    judge_a = retry_api_call(lambda: client.chat.completions.create(
-                        model=MODEL_NAME, temperature=0.1, max_tokens=200,
-                        messages=[{"role": "user", "content": make_judge_prompt(scenario_text, ans_a)}],
-                    ))
-                    judge_a = parse_judge_result(judge_a.choices[0].message.content.strip())
+                    ans_a = generate_mbti_answer(system_a, scenario_text)
+                    judge_a = judge_mbti_answer(mbti_type, scenario_text, ans_a)
                     results_a.append(judge_a["consistent"])
                 except Exception:
                     pass
 
-                # 对照组B
                 try:
-                    resp = retry_api_call(lambda: client.chat.completions.create(
-                        model=MODEL_NAME, temperature=0.35, max_tokens=350,
-                        messages=[{"role": "system", "content": system_b}, {"role": "user", "content": scenario_text}],
-                    ))
-                    ans_b = resp.choices[0].message.content.strip()
-                    if not ans_b:
-                        resp = retry_api_call(lambda: client.chat.completions.create(
-                            model=MODEL_NAME, temperature=0.45, max_tokens=350,
-                            messages=[{"role": "system", "content": system_b}, {"role": "user", "content": scenario_text}],
-                        ))
-                        ans_b = resp.choices[0].message.content.strip()
-                    judge_b = retry_api_call(lambda: client.chat.completions.create(
-                        model=MODEL_NAME, temperature=0.1, max_tokens=200,
-                        messages=[{"role": "user", "content": make_judge_prompt(scenario_text, ans_b)}],
-                    ))
-                    judge_b = parse_judge_result(judge_b.choices[0].message.content.strip())
+                    ans_b = generate_mbti_answer(system_b, scenario_text)
+                    judge_b = judge_mbti_answer(mbti_type, scenario_text, ans_b)
                     results_b.append(judge_b["consistent"])
                 except Exception:
                     pass
@@ -1068,7 +929,6 @@ def api_eval_ablation_stream(config: dict = None):
 
 @app.post("/api/eval/mbti/error_analysis/stream")
 def api_eval_error_analysis_stream(config: dict = None):
-    """SSE流式错误分析：快速评估并流式返回错误分布"""
     import random as _random
     all_types = list(MBTI_DESCRIPTIONS.keys())
     test_types = (config or {}).get("test_types", None)
@@ -1082,64 +942,17 @@ def api_eval_error_analysis_stream(config: dict = None):
         total = len(test_types)
 
         for idx, mbti_type in enumerate(test_types):
-            description = MBTI_DESCRIPTIONS.get(mbti_type, mbti_type)
-            style = MBTI_SPEAKING_STYLES.get(mbti_type, "")
-            cognitive = MBTI_COGNITIVE_FUNCTIONS.get(mbti_type, "")
-
-            system_prompt = f"""你是{mbti_type}型人格。请严格以该类型的身份回答用户问题。
-
-【{mbti_type}人格画像】
-{description}
-
-【认知运作方式】
-{cognitive}
-
-【说话风格指南】
-{style}
-
-约束：
-- 每个回答必须自然体现{mbti_type}的认知模式和说话方式
-- 不要提及MBTI术语、不要评价自己的性格——只需成为{mbti_type}
-- 答案控制在3-5句话，简洁自然"""
+            system_prompt = build_mbti_system_prompt(mbti_type)
 
             for scenario in MBTI_SCENARIOS:
                 scenario_text = f"{scenario['scenario']}\n（{scenario.get('instruction', '')}）"
+
                 try:
-                    response = retry_api_call(lambda: client.chat.completions.create(
-                        model=MODEL_NAME, temperature=0.35, max_tokens=350,
-                        messages=[{"role": "system", "content": system_prompt},
-                                  {"role": "user", "content": scenario_text}],
-                    ))
-                    answer = response.choices[0].message.content.strip()
-                    if not answer:
-                        response = retry_api_call(lambda: client.chat.completions.create(
-                            model=MODEL_NAME, temperature=0.45, max_tokens=350,
-                            messages=[{"role": "system", "content": system_prompt},
-                                      {"role": "user", "content": scenario_text}],
-                        ))
-                        answer = response.choices[0].message.content.strip()
+                    answer = generate_mbti_answer(system_prompt, scenario_text)
                 except Exception:
                     continue
 
-                judge_prompt = f"""评估以下回答是否体现了{mbti_type}型人格的特征。
-
-{mbti_type}特征参考：{description}
-场景：{scenario_text}
-回答：{answer}
-
-评判标准：回答的整体思维方式、语气风格和价值观是否与{mbti_type}一致。不要求每个细节都匹配，模棱两可倾向判true。
-严格要求：reason字段必须写一句10字以上的具体中文评判。禁止写空字符串。
-只输出JSON（一行，不要markdown）：
-{{"consistent": true, "confidence": 0.85, "reason": "此处写具体评判理由"}}"""
-
-                try:
-                    judge_resp = retry_api_call(lambda: client.chat.completions.create(
-                        model=MODEL_NAME, temperature=0.1, max_tokens=200,
-                        messages=[{"role": "user", "content": judge_prompt}],
-                    ))
-                    judge = parse_judge_result(judge_resp.choices[0].message.content.strip())
-                except Exception:
-                    judge = {"consistent": False, "confidence": 0.5, "reason": "评判失败"}
+                judge = judge_mbti_answer(mbti_type, scenario_text, answer)
 
                 result = {
                     "mbti_type": mbti_type, "dimension": scenario["dimension"],
@@ -1161,7 +974,6 @@ def api_eval_error_analysis_stream(config: dict = None):
 
 @app.get("/api/eval/mbti/error_analysis")
 def api_get_error_analysis():
-    """返回最近一次 MBTI 评估的错误分析"""
     error_file = "error_analysis.json"
     if not os.path.exists(error_file):
         return {"code": 404, "message": "尚未运行错误分析，请先执行评估"}
@@ -1171,7 +983,6 @@ def api_get_error_analysis():
 
 @app.get("/api/eval/mbti/history")
 def api_get_mbti_eval_history():
-    """获取历史MBTI评估结果列表"""
     results = []
     if not os.path.exists(EVAL_DIR):
         return {"code": 200, "data": results}
@@ -1192,7 +1003,6 @@ def api_get_mbti_eval_history():
     return {"code": 200, "data": results}
 
 
-# ===================== BLEU 评估接口 =====================
 def load_bleu_eval_samples():
     from config import MAX_EVAL_SAMPLES
     samples = []
@@ -1389,14 +1199,12 @@ def api_eval_bleu_stream(config: dict = None):
             except Exception:
                 continue
 
-            # 每5个样本推送一次进度
             if (idx + 1) % 5 == 0 or idx == total - 1:
                 avg = round(np.mean(bleu_scores), 4) if bleu_scores else 0
                 yield f"data: {json.dumps({'type': 'progress', 'current': idx + 1, 'total': total, 'avg_bleu': avg}, ensure_ascii=False)}\n\n"
 
         avg_bleu = round(np.mean(bleu_scores), 4) if bleu_scores else 0
 
-        # 计算字符级BLEU和ROUGE-L
         char_bleu = 0.0
         rouge_f1 = 0.0
         if results:
@@ -1445,10 +1253,8 @@ def api_get_bleu_eval_history():
     return {"code": 200, "data": results}
 
 
-# ===================== MBTI 类型信息 =====================
 @app.get("/api/mbti/types")
 def api_get_mbti_types():
-    """返回所有MBTI类型的描述和说话风格"""
     types = []
     for code, desc in MBTI_DESCRIPTIONS.items():
         types.append({
@@ -1459,12 +1265,10 @@ def api_get_mbti_types():
     return {"code": 200, "data": types}
 
 
-# ===================== 对话记忆系统 =====================
 MEMORY_DIR = os.path.join(DATA_DIR, "memories")
 
 
 def load_memories(character_name):
-    """加载角色的持久记忆"""
     os.makedirs(MEMORY_DIR, exist_ok=True)
     safe_name = re.sub(r'[\\/:*?"<>|]', '_', character_name)
     filepath = os.path.join(MEMORY_DIR, f"{safe_name}.json")
@@ -1475,7 +1279,6 @@ def load_memories(character_name):
 
 
 def save_memories(character_name, memories):
-    """保存角色的持久记忆"""
     os.makedirs(MEMORY_DIR, exist_ok=True)
     safe_name = re.sub(r'[\\/:*?"<>|]', '_', character_name)
     filepath = os.path.join(MEMORY_DIR, f"{safe_name}.json")
@@ -1488,7 +1291,6 @@ def extract_memories_from_chat(character_name, history):
     if not history or len(history) < 3:
         return []
 
-    # 构建对话摘要
     chat_text = ""
     for msg in history[-20:]:
         role = "用户" if msg.get("role") == "user" else character_name
@@ -1511,7 +1313,6 @@ def extract_memories_from_chat(character_name, history):
             max_tokens=300,
         )
         text = response.choices[0].message.content.strip()
-        # 提取JSON数组
         json_match = re.search(r'\[.*\]', text, re.DOTALL)
         if json_match:
             return json.loads(json_match.group(0))
@@ -1537,34 +1338,30 @@ def api_delete_memory(character_name: str, index: int):
 
 @app.post("/api/memory/extract")
 def api_extract_memories(request: dict):
-    """从对话中提取并保存记忆"""
     character_name = request.get("character_name", "角色")
     history = request.get("history", [])
     new_memories = extract_memories_from_chat(character_name, history)
     if new_memories:
         existing = load_memories(character_name)
-        # 去重合并
         existing_set = set(existing)
         for m in new_memories:
             if m not in existing_set:
                 existing.append(m)
-        save_memories(character_name, existing[-20:])  # 最多保留20条
+        save_memories(character_name, existing[-20:])
     return {"code": 200, "data": {"added": len(new_memories), "memories": load_memories(character_name)}}
 
 
 def build_character_prompt_with_memory(config: dict) -> str:
-    """构建含持久记忆的系统提示词"""
     base_prompt = build_character_prompt(config)
     name = config.get("name", "")
     if name:
         memories = load_memories(name)
         if memories:
-            memory_text = "\n".join([f"  - {m}" for m in memories[-10:]])  # 最近10条
+            memory_text = "\n".join([f"  - {m}" for m in memories[-10:]])
             base_prompt += f"\n\n【历史记忆——你记得关于用户的以下信息】\n{memory_text}\n请在对话中恰当地运用这些记忆，让交流更自然亲切。"
     return base_prompt
 
 
-# ===================== 最新完整评估结果 =====================
 @app.get("/api/eval/mbti/latest")
 def api_get_latest_mbti_eval():
     """返回最近一次 MBTI 评估的完整结果（优先Web端保存，其次命令行输出）"""
@@ -1603,7 +1400,6 @@ def api_get_latest_bleu_eval():
     return {"code": 404, "message": "暂无评估结果，请先在终端运行 python eval_bleu.py"}
 
 
-# ===================== 启动 =====================
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000, reload=False)

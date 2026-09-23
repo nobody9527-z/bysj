@@ -3,7 +3,6 @@ import requests
 
 BACKEND_URL = "http://localhost:8000"
 
-# ===================== 测试 1：COSER 角色列表接口 =====================
 print("=" * 50)
 print("测试 1：GET /api/coser")
 print("=" * 50)
@@ -21,7 +20,6 @@ try:
 except Exception as e:
     print(f"❌ 测试失败：{e}")
 
-# ===================== 测试 2：聊天接口 =====================
 print("\n" + "=" * 50)
 print("测试 2：POST /api/chat")
 print("=" * 50)
@@ -39,7 +37,6 @@ try:
 except Exception as e:
     print(f"❌ 测试失败：{e}")
 
-# ===================== 测试 3：多轮对话 =====================
 print("\n" + "=" * 50)
 print("测试 3：POST /api/chat（多轮对话）")
 print("=" * 50)
@@ -60,7 +57,6 @@ try:
 except Exception as e:
     print(f"❌ 测试失败：{e}")
 
-# ===================== 测试 4：对话导出接口 =====================
 print("\n" + "=" * 50)
 print("测试 4：POST /api/export")
 print("=" * 50)

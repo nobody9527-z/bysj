@@ -38,7 +38,6 @@ def tokenize(text):
         return list(text)  # 字符级回退
 
 
-# ===================== 语料库级 BLEU =====================
 def ngrams(tokens, n):
     return [tuple(tokens[i:i+n]) for i in range(len(tokens) - n + 1)]
 
@@ -87,7 +86,6 @@ def corpus_bleu(references_list, candidates, max_n=4):
     return bleu * bp, precisions, bp
 
 
-# ===================== ROUGE-L (Longest Common Subsequence) =====================
 def lcs_length(a, b):
     """最长公共子序列长度（DP优化）"""
     m, n = len(a), len(b)
@@ -120,7 +118,6 @@ def rouge_l(references_list, candidates):
     return f1, r, p
 
 
-# ===================== 数据加载 =====================
 def load_eval_samples():
     samples = []
     if not os.path.exists(COSER_FOLDER):
@@ -167,7 +164,6 @@ def build_context_prompt(sample):
 {context_text}{sample['reference_char']}："""
 
 
-# ===================== 运行评估 =====================
 def run_bleu_evaluation():
     print("=" * 60)
     print("BLEU 对话质量评估 — 基于 COSER 数据集")

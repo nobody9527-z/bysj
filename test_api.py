@@ -1,10 +1,8 @@
 from openai import OpenAI
 import traceback
 
-# ===================== 配置 =====================
 import os
 API_KEY = os.environ.get("ARK_API_KEY", "")
-# ================================================
 
 MODEL_NAME = "doubao-seed-2-0-pro-260215"
 BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
